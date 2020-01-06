@@ -4,6 +4,8 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
+    container_name: ror_elasticsearch
+    hostname: ror_elasticsearch
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -14,10 +16,12 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=true
     networks:
-      - RoR_elk_Network
+      - elk_Network
 
   logstash:
     image: docker.elastic.co/logstash/logstash:7.4.0
+    container_name: ror_logstash
+    hostname: ror_logstash
     ports:
       - "5000:5000"
       - "9600:9600"
@@ -27,10 +31,12 @@ services:
       - source: logstash_pipeline
         target: /usr/share/logstash/pipeline/logstash.conf
     networks:
-      - RoR_elk_Network
+      - elk_Network
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.4.0
+    container_name: ror_kibana
+    hostname: ror_kibana
     ports:
       - "5601:5601"
     configs:
@@ -39,7 +45,7 @@ services:
     environment:
       - xpack.security.enabled=true
     networks:
-      - RoR_elk_Network
+      - elk_Network
 
 configs:
 
@@ -53,5 +59,5 @@ configs:
     file: ./kibana/config/kibana.yml
 
 networks:
-  RoR_elk_Network:
+  elk_Network:
     driver: bridge
